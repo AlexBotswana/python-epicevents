@@ -1,6 +1,7 @@
 import sqlite3
 from views.Flash_View import FlashView
-from config import DATABASE_NAME, USER_ID_CONNECTED
+from config import DATABASE_NAME # USER_ID_CONNECTED
+from dotenv import load_dotenv, find_dotenv, dotenv_values
 
 class CustomerModel:
     def __init__(self):
@@ -20,6 +21,12 @@ class CustomerModel:
 
     def create_customer(self, firstname, lastname, email, phone, company_name, located, creation_date, last_contact_date):
         try:
+            # find .env file
+            env_path = find_dotenv('.env')
+            # reload var environnement
+            load_dotenv(env_path)
+            env_vars = dotenv_values(env_path)
+            USER_ID_CONNECTED = env_vars['USER_ID']
             query = "INSERT INTO Customers (firstname, lastname, email, phone, company_name, located, creation_date, last_contact_date, commercial_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
             self.cursor.execute(query, (firstname, lastname, email, phone, company_name, located, creation_date, last_contact_date, USER_ID_CONNECTED))
             self.conn.commit()

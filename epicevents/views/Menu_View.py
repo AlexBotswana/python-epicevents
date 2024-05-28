@@ -231,7 +231,7 @@ class MenuView:
         while int(menu_choice) != 0:
             try:
                 # Menu selection
-                print('\n\n---------------- EPIC Events ----------------\n')
+                print('\n\n---------------- EPIC Events Commercial Menu----------------\n')
                 print(' 1 - Customer menu')
                 print(' 2 - Contract menu')
                 print(' 3 - Event menu')

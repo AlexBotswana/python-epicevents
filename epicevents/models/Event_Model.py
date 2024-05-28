@@ -1,6 +1,7 @@
 import sqlite3
-from config import DATABASE_NAME, USER_ID_CONNECTED
+from config import DATABASE_NAME
 from views.Flash_View import FlashView
+from dotenv import find_dotenv, load_dotenv, dotenv_values
 
 class EventModel:
     def __init__(self):
@@ -16,10 +17,10 @@ class EventModel:
         except sqlite3.Error as e:
             FlashView.display_error(str(e))
 
-    def update_event(self, event_id, title, begin_date, end_date, located, attendees, notes, contract_id, support_user_id):
+    def update_event(self, event_id, title, begin_date, end_date, located, attendees, notes, support_user_id):
         try:
-            query = "UPDATE Events SET title = ?, begin_date = ?, end_date = ?, located = ?, attendees = ?, notes = ?, contract_id = ?, support_user_id = ? WHERE id = ? "
-            self.cursor.execute(query, (title, begin_date, end_date, located, attendees, notes, contract_id, support_user_id, event_id))
+            query = "UPDATE Events SET title = ?, begin_date = ?, end_date = ?, located = ?, attendees = ?, notes = ?, support_user_id = ? WHERE id = ? "
+            self.cursor.execute(query, (title, begin_date, end_date, located, attendees, notes, support_user_id, event_id))
             self.conn.commit()
             return True
         except sqlite3.Error as e:
@@ -73,6 +74,12 @@ class EventModel:
 
     def view_events_for_support(self):
         try:
+            # find .env file
+            env_path = find_dotenv('.env')
+            # reload var environnement
+            load_dotenv(env_path)
+            env_vars = dotenv_values(env_path)
+            USER_ID_CONNECTED = env_vars['USER_ID']
             query = "SELECT id, title, begin_date, end_date, located, attendees, notes, contract_id FROM Events WHERE support_user_id = ?"
             self.cursor.execute(query, (USER_ID_CONNECTED,))
             events_list = self.cursor.fetchall()

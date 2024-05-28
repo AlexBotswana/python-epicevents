@@ -1,16 +1,23 @@
 from models.Event_Model import EventModel
 from models.User_Model import UserModel
 from views.Flash_View import FlashView
-from config import USER_ID_CONNECTED
+from dotenv import load_dotenv, find_dotenv, dotenv_values
 
 class EventController:
     def __init__(self):
         self.event_model = EventModel()
         self.user_model = UserModel()
 
-    # Function to know if the user connected is in charge of the event or is the user manager (all rights = job = 1)
+    # Function to know if the user connected is in charge of the event or is the user manager (superuser, job = 1)
     def support_in_charge(self, event_id):
         try:
+            # find .env file
+            env_path = find_dotenv('.env')
+            # reload var environnement
+            load_dotenv(env_path)
+            env_vars = dotenv_values(env_path)
+            USER_ID_CONNECTED = env_vars['USER_ID']
+            # support in charge of the event
             support_id = self.event_model.view_single_event(event_id)
             job_id_user_connected = self.user_model.get_user_permissions(USER_ID_CONNECTED)
             print(USER_ID_CONNECTED)
@@ -33,9 +40,9 @@ class EventController:
         except Exception as e:
             FlashView.display_error(str(e))
 
-    def update_event(self, event_id, title, begin_date, end_date, located, attendees, notes, contract_id, support_user_id):
+    def update_event(self, event_id, title, begin_date, end_date, located, attendees, notes, support_user_id):
         try:
-            success = self.event_model.update_event(event_id, title, begin_date, end_date, located, attendees, notes, contract_id, support_user_id)
+            success = self.event_model.update_event(event_id, title, begin_date, end_date, located, attendees, notes, support_user_id)
             return success
         except Exception as e:
             FlashView.display_error(str(e))

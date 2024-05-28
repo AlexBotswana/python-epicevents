@@ -1,7 +1,9 @@
+import os
 from models.Customer_Model import CustomerModel
 from models.User_Model import UserModel
 from views.Flash_View import FlashView
-from config import USER_ID_CONNECTED
+#from config import USER_ID_CONNECTED
+from dotenv import load_dotenv, find_dotenv, dotenv_values
 
 class CustomerController:
     def __init__(self):
@@ -15,6 +17,12 @@ class CustomerController:
     # Function to know if the user connected is in charge of the customer or is the user manager (all rights = job = 1)
     def customer_in_charge(self, customer_id):
         try:
+            # find .env file
+            env_path = find_dotenv('.env')
+            # reload var environnement
+            load_dotenv(env_path)
+            env_vars = dotenv_values(env_path)
+            USER_ID_CONNECTED = env_vars['USER_ID']
             commercial_id = self.customer_model.view_single_customer(customer_id)
             job_id_user_connected = self.user_model.get_user_permissions(USER_ID_CONNECTED)
             if commercial_id[0] != '':

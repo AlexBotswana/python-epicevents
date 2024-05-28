@@ -1,10 +1,10 @@
-from models.User_Model import UserModel
-from views.Flash_View import FlashView
 import jwt 
 import bcrypt
-import config
-from config import load_dotenv, SECRET_KEY
-from dotenv import set_key, find_dotenv
+from models.User_Model import UserModel
+from views.Flash_View import FlashView
+from config import SECRET_KEY
+from dotenv import set_key, find_dotenv, load_dotenv, dotenv_values
+
 
 class UserController:
     def __init__(self):
@@ -17,11 +17,14 @@ class UserController:
     def update_user_id_in_env(new_user_id):
         try:
             # find .env file
-            env_path = find_dotenv()
-            # Update variable USER_ID
+            env_path = find_dotenv('.env')
+            # Update .env with variable USER_ID
             set_key(env_path, "USER_ID", str(new_user_id))
             # reload var environnement
-            config.env_vars = config.load_env_variables()
+            load_dotenv(env_path)
+            env_vars = dotenv_values(env_path)
+            USER_ID_CONNECTED = env_vars['USER_ID']
+            print(USER_ID_CONNECTED)
         except Exception as e:
             FlashView.display_error(str(e))
 

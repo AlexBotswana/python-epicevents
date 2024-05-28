@@ -10,8 +10,8 @@ class EventView:
         event_controller = EventController()
         try:
             title = input("Enter event title: ")
-            begin_date = input("Enter begin date (YYYY-MM-DD HH:MM:SS): ")
-            end_date = input("Enter end date (YYYY-MM-DD HH:MM:SS): ")
+            begin_date = input("Enter begin date (YYYY-MM-DD HH:MM): ")
+            end_date = input("Enter end date (YYYY-MM-DD HH:MM): ")
             located = input("Enter event location: ")
             attendees = int(input("Enter number of attendees: "))
             notes = input("Enter event notes: ")
@@ -31,14 +31,13 @@ class EventView:
             author_update = event_controller.support_in_charge(event_id)
             if author_update:
                 title = input("Enter new event title: ")
-                begin_date = input("Enter new begin date (YYYY-MM-DD HH:MM:SS): ")
-                end_date = input("Enter new end date (YYYY-MM-DD HH:MM:SS): ")
+                begin_date = input("Enter new begin date (YYYY-MM-DD HH:MM): ")
+                end_date = input("Enter new end date (YYYY-MM-DD HH:MM): ")
                 located = input("Enter new event location: ")
                 attendees = int(input("Enter new number of attendees: "))
                 notes = input("Enter new event notes: ")
-                contract_id = int(input("Enter new contract ID: "))
                 support_user_id = input("Enter new support user ID: ")
-                success = event_controller.update_event(event_id, title, begin_date, end_date, located, attendees, notes, contract_id, support_user_id)
+                success = event_controller.update_event(event_id, title, begin_date, end_date, located, attendees, notes, support_user_id)
                 FlashView.display_update_result(success)
                 return success
             else:
