@@ -1,9 +1,10 @@
 import sqlite3
 from controllers.User_Controller import UserController
+from config import DATABASE_NAME
 
-def create_database(database_name):
+def create_database():
     # Connect to the database (or create it if it doesn't exist)
-    conn = sqlite3.connect(database_name)
+    conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
     # Create tables
@@ -64,18 +65,17 @@ def create_database(database_name):
         located VARCHAR(255),
         attendees INTEGER,
         notes TEXT,
-        contract_id INTEGER,
         support_user_id INTEGER,
-        FOREIGN KEY (contract_id) REFERENCES Contracts(id),
-        FOREIGN KEY (support_user_id) REFERENCES Users(id)
+        contract_id INTEGER,
+        FOREIGN KEY (contract_id) REFERENCES Contracts(id)
         )''')
 
-def load_data_from_sql_file(sql_file, database_name, secret_key):
+def load_data_from_sql_file(sql_file):
     # Connect to the database
-    conn = sqlite3.connect(database_name)
+    conn = sqlite3.connect(DATABASE_NAME)
     cursor = conn.cursor()
 
-    # test if manager already exists
+    # test if manager (superuser) already exists
     if sql_file == './db/manager_dataset.sql':
         query = "SELECT * FROM Users WHERE username = 'manager'"
         cursor.execute(query)
@@ -83,7 +83,7 @@ def load_data_from_sql_file(sql_file, database_name, secret_key):
         if user:
             pass
         else:
-            user_connection = UserController(database_name, secret_key)
+            user_connection = UserController()
             username = "manager"
             password = "manager123"
             job_id = 1

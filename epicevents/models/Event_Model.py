@@ -1,8 +1,10 @@
 import sqlite3
+from config import DATABASE_NAME, USER_ID_CONNECTED
+from views.Flash_View import FlashView
 
 class EventModel:
-    def __init__(self, database_name):
-        self.conn = sqlite3.connect(database_name)
+    def __init__(self):
+        self.conn = sqlite3.connect(DATABASE_NAME)
         self.cursor = self.conn.cursor()
 
     def create_event(self, title, begin_date, end_date, located, attendees, notes, contract_id, support_user_id):
@@ -12,8 +14,7 @@ class EventModel:
             self.conn.commit()
             return True
         except sqlite3.Error as e:
-            print(f"An error occurred: {e}")
-            return False, str(e)
+            FlashView.display_error(str(e))
 
     def update_event(self, event_id, title, begin_date, end_date, located, attendees, notes, contract_id, support_user_id):
         try:
@@ -22,8 +23,17 @@ class EventModel:
             self.conn.commit()
             return True
         except sqlite3.Error as e:
-            print(f"An error occurred: {e}")
-            return False, str(e)
+           FlashView.display_error(str(e))
+
+    def update_event_support(self, event_id, support_user_id):
+        # add a support to an event
+        try:
+            query = "UPDATE Events SET support_user_id = ? WHERE id = ? "
+            self.cursor.execute(query, (support_user_id, event_id))
+            self.conn.commit()
+            return True
+        except sqlite3.Error as e:
+           FlashView.display_error(str(e))
 
     def delete_event(self, event_id):
         try:
@@ -32,8 +42,7 @@ class EventModel:
             self.conn.commit()
             return True
         except sqlite3.Error as e:
-            print(f"An error occurred: {e}")
-            return False, str(e)
+            FlashView.display_error(str(e))
 
     def view_events(self):
         try:
@@ -42,5 +51,31 @@ class EventModel:
             events_list = self.cursor.fetchall()
             return events_list if events_list else None
         except sqlite3.Error as e:
-            print(f"An error occurred: {e}")
-            return None
+            FlashView.display_error(str(e))
+
+    def view_single_event(self, event_id):
+        try:
+            query = "SELECT support_user_id, title, begin_date, end_date, located, attendees, notes, contract_id FROM Events WHERE id = ?"
+            self.cursor.execute(query, (event_id,))
+            event = self.cursor.fetchone()
+            return event if event else None
+        except sqlite3.Error as e:
+            FlashView.display_error(str(e))
+
+    def view_events_wo_support(self):
+        try:
+            query = "SELECT id, title, begin_date, end_date, located, attendees, notes, contract_id FROM Events WHERE support_user_id is null"
+            self.cursor.execute(query)
+            events_list = self.cursor.fetchall()
+            return events_list if events_list else None
+        except sqlite3.Error as e:
+            FlashView.display_error(str(e))
+
+    def view_events_for_support(self):
+        try:
+            query = "SELECT id, title, begin_date, end_date, located, attendees, notes, contract_id FROM Events WHERE support_user_id = ?"
+            self.cursor.execute(query, (USER_ID_CONNECTED,))
+            events_list = self.cursor.fetchall()
+            return events_list if events_list else None
+        except sqlite3.Error as e:
+            FlashView.display_error(str(e))

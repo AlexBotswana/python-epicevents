@@ -1,10 +1,10 @@
 from controllers.User_Controller import UserController
-from views.Display_View import DisplayView
+from views.Flash_View import FlashView
 import getpass
 
 class UserView:
-    def __init__(self, database_name, secret_key) -> None:
-        self.user_connection = UserController(database_name, secret_key)
+    def __init__(self) -> None:
+        self.user_connection = UserController()
 
     @staticmethod
     def get_user_credentials():
@@ -13,21 +13,21 @@ class UserView:
         return username, password
     
     @staticmethod
-    def create_user(database_name, secret_key):
-        user_connection = UserController(database_name, secret_key)
+    def create_user():
+        user_connection = UserController()
         try:
             username = input("Enter username: ")
             password = getpass.getpass("Enter password: ")
             job_id = input("Enter job_id (2-Gestion / 3-Commercial / 4-Support): ")
             success = user_connection.create_user(username, password, job_id)
-            DisplayView.display_creation_result(success)
+            FlashView.display_creation_result(success)
             return success
         except Exception as e:
-            DisplayView.display_error(str(e))
+            FlashView.display_error(str(e))
     
     @staticmethod
-    def update_user(database_name, secret_key):
-        user_connection = UserController(database_name, secret_key)
+    def update_user():
+        user_connection = UserController()
         try:
             username = input("Enter username to be updated: ")
             new_pwd = getpass.getpass("Enter new password: ")
@@ -35,24 +35,31 @@ class UserView:
             firstname = input("Enter firstname: ")
             lastname = input("Enter lastname: ")
             success = user_connection.update_user(username, new_pwd, new_job_id, firstname, lastname)
-            DisplayView.display_update_result(success)
+            FlashView.display_update_result(success)
             return success
         except Exception as e:
-            DisplayView.display_error(str(e))
+            FlashView.display_error(str(e))
 
     @staticmethod
-    def delete_user(database_name, secret_key):
-        user_connection = UserController(database_name, secret_key)
+    def delete_user():
+        user_connection = UserController()
         try:
             username = input("Enter username to be deleted: ")
             success = user_connection.delete_user(username)
-            DisplayView.display_delete_result(success)
+            FlashView.display_delete_result(success)
             return success
         except Exception as e:
-            DisplayView.display_error(str(e))
+            FlashView.display_error(str(e))
 
     @staticmethod
-    def view_users(database_name, secret_key):
-        user_connection = UserController(database_name, secret_key)
-        list_users = user_connection.view_users()
-        print(list_users)
+    def view_users():
+        user_connection = UserController()
+        try:
+            list_users = user_connection.view_users()
+            if list_users:
+                for user in list_users:
+                    print(user)
+                else:
+                    print("No user found.")
+        except Exception as e:
+            FlashView.display_error(str(e))

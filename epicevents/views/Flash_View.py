@@ -1,4 +1,4 @@
-class DisplayView:
+class FlashView:
     @staticmethod
     def display_authent_result(success):
         if success:
