@@ -5,6 +5,18 @@ from views.User_View import UserView
 from views.Flash_View import FlashView
 from controllers.User_Controller import UserController
 from db import migration
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn="https://4468112989beb7b513b6602eac54ee77@o4507332701192192.ingest.de.sentry.io/4507332712071248",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
 
 print('******************************************************************')
 print('********************* EPIC EVENTS CRM ****************************')
@@ -15,14 +27,13 @@ migration.create_database()
 # User Manager Creation 
 migration.load_data_from_sql_file('./db/manager_dataset.sql')
 
-'''
 data_set = 0
 print('\n1 - Upload data set?')
 print('2 - Do nothing')
 data_set = int(input('\n Your choice: '))
 if data_set == 1:
     migration.load_data_from_sql_file('./db/dataset.sql')
-'''
+
 
 print('\n---------------- LOGIN to EPIC EVENTS CRM ---------------------')
 

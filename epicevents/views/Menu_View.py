@@ -119,7 +119,7 @@ class MenuView:
                             event_view.update_event()
                         elif int(menu_choice_event) == 4:
                             event_view.delete_event()
-            except Exception:
+            except Exception as e:
                 print('WRONG CHOICE')
 
     def menu_administration() -> None:
@@ -223,7 +223,7 @@ class MenuView:
                                 menu_choice_event_update = int(input(' Choice : '))
                                 if int(menu_choice_event_update) == 1:
                                     event_view.update_event_support()
-            except Exception:
+            except Exception as e:
                 print('WRONG CHOICE')
 
     def menu_commercial() -> None:
@@ -303,7 +303,7 @@ class MenuView:
                             event_view.create_event()
                         elif int(menu_choice_event) == 2:
                             event_view.view_events()
-            except Exception:
+            except Exception as e:
                 print('WRONG CHOICE')
 
     def menu_support() -> None:
@@ -371,5 +371,5 @@ class MenuView:
                                     event_view.view_events()
                         elif int(menu_choice_event) == 2:
                             event_view.update_event()
-            except Exception:
+            except Exception as e:
                 print('WRONG CHOICE')

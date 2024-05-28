@@ -1,6 +1,8 @@
 import sqlite3
+import sentry_sdk
 from config import DATABASE_NAME
 from views.Flash_View import FlashView
+
 
 class ContractModel:
     def __init__(self):
@@ -21,8 +23,12 @@ class ContractModel:
             query = "UPDATE Contracts SET title = ?, total_amount = ?, remaining_amount = ?, customer_id = ?, commercial_user_id = ?, statement_id = ? WHERE id = ?"
             self.cursor.execute(query, (title, total_amount, remaining_amount, customer_id, commercial_user_id, statement_id, contract_id))
             self.conn.commit()
+            # Register into Sentry if a contract is signed (statement_id = 2)
+            if int(statement_id) == 2:
+                sentry_sdk.capture_message(f"Contract Signed : {title}", level="info")
             return True
         except sqlite3.Error as e:
+            sentry_sdk.capture_exception(e)
             FlashView.display_error(str(e))
 
     def delete_contract(self, contract_id):

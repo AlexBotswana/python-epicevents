@@ -1,6 +1,7 @@
 import sqlite3
 from views.Flash_View import FlashView
 from config import DATABASE_NAME
+import sentry_sdk
 
 class UserModel:
     def __init__(self):
@@ -59,8 +60,11 @@ class UserModel:
             query = "INSERT INTO Users (username, pwd, job_id, salt) VALUES (?, ?, ?, ?)"
             self.cursor.execute(query, (username, password, job_id, salt))
             self.conn.commit()
+            # Capture user creation in Sentry
+            sentry_sdk.capture_message(f"User created : {username}", level="info")
             return True
         except sqlite3.Error as e:
+            sentry_sdk.capture_exception(e)
             FlashView.display_error(str(e))
 
     def update_user(self, username, password, job_id, firstname, lastname, salt):
@@ -68,8 +72,11 @@ class UserModel:
             query = "UPDATE Users SET pwd = ?, job_id = ?, firstname = ?, lastname = ?, salt = ? WHERE username = ?"
             self.cursor.execute(query, (password, job_id,firstname, lastname, salt, username))
             self.conn.commit()
+            # capture user updated in sentry
+            sentry_sdk.capture_message(f"User updated : {username}", level="info")
             return True
         except sqlite3.Error as e:
+           sentry_sdk.capture_exception(e)
            FlashView.display_error(str(e))
 
     def view_users(self):

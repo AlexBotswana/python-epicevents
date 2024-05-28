@@ -17,7 +17,6 @@ class CustomerController:
         try:
             commercial_id = self.customer_model.view_single_customer(customer_id)
             job_id_user_connected = self.user_model.get_user_permissions(USER_ID_CONNECTED)
-            print(USER_ID_CONNECTED)
             if commercial_id[0] != '':
                 if (int(commercial_id[0]) == int(USER_ID_CONNECTED)) or (int(job_id_user_connected) == 1):
                     return True
