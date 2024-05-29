@@ -65,7 +65,7 @@ class EventModel:
 
     def view_events_wo_support(self):
         try:
-            query = "SELECT id, title, begin_date, end_date, located, attendees, notes, contract_id FROM Events WHERE support_user_id is null"
+            query = "SELECT id, title, begin_date, end_date, located, attendees, notes, contract_id FROM Events WHERE support_user_id = ''"
             self.cursor.execute(query)
             events_list = self.cursor.fetchall()
             return events_list if events_list else None

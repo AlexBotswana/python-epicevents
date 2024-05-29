@@ -1,4 +1,3 @@
-import os
 from models.Customer_Model import CustomerModel
 from models.User_Model import UserModel
 from views.Flash_View import FlashView
@@ -48,6 +47,13 @@ class CustomerController:
     def view_customers(self):
         try:
             customers_list = self.customer_model.view_customers()
+            if customers_list:
+                # replace user id by username for user in charge of the customer
+                for i in range(len(customers_list)):
+                    customer_list = list(customers_list[i])
+                    commercial_username = self.user_model.get_username(int(customer_list[9]))
+                    customer_list[9] = commercial_username
+                    customers_list[i] = tuple(customer_list)
             return customers_list
         except Exception as e:
             FlashView.display_error(str(e))

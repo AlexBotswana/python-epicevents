@@ -29,13 +29,23 @@ def main():
     data_set = 0
     print('\n1 - Upload data set?')
     print('2 - Do nothing')
-    data_set = int(input('\n Your choice: '))
-    if data_set == 1:
-        # create data for testing
-        migration.load_data_from_sql_file('./db/dataset.sql')
+    # test entries
+    while True:
+        user_input = input('\n Your choice: ')
+        if user_input.isdigit():
+            data_set = int(user_input)
+            if data_set == 1:
+                # create data for testing
+                migration.load_data_from_sql_file('./db/dataset.sql')
+                break
+            elif data_set == 2:
+                break
+            else:
+                print('\n\nWrong choice')
+        else:
+            print('\n\nWrong choice')
 
-
-    print('\n---------------- LOGIN to EPIC EVENTS CRM ---------------------')
+    print('\n\n---------------- LOGIN to EPIC EVENTS CRM ---------------------')
 
 
     user_connection = UserController()

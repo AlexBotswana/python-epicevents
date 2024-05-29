@@ -1,5 +1,6 @@
 from models.Event_Model import EventModel
 from models.User_Model import UserModel
+from models.Contract_Model import ContractModel
 from views.Flash_View import FlashView
 from dotenv import load_dotenv, find_dotenv, dotenv_values
 
@@ -7,6 +8,7 @@ class EventController:
     def __init__(self):
         self.event_model = EventModel()
         self.user_model = UserModel()
+        self.contract_model = ContractModel()
 
     # Function to know if the user connected is in charge of the event or is the user manager (superuser, job = 1)
     def support_in_charge(self, event_id):
@@ -65,6 +67,15 @@ class EventController:
     def view_events(self):
         try:
             events_list = self.event_model.view_events()
+            if events_list:
+                # replace customer id by customer lastname for user in charge of the customer
+                for i in range(len(events_list)):
+                    event_list = list(events_list[i])
+                    contract = self.contract_model.view_single_contract(int(event_list[7])) # info contract with contract id
+                    event_list[7] = contract[1] # Contract title
+                    if event_list[8]:
+                        event_list[8] = self.user_model.get_username(int(event_list[8])) # support username
+                    events_list[i] = tuple(event_list)
             return events_list
         except Exception as e:
             FlashView.display_error(str(e))
@@ -72,6 +83,13 @@ class EventController:
     def view_events_wo_support(self):
         try:
             events_list = self.event_model.view_events_wo_support()
+            if events_list:
+                # replace customer id by customer lastname for user in charge of the customer
+                for i in range(len(events_list)):
+                    event_list = list(events_list[i])
+                    contract = self.contract_model.view_single_contract(int(event_list[7])) # info contract with contract id
+                    event_list[7] = contract[1] # Contract title
+                    events_list[i] = tuple(event_list)
             return events_list
         except Exception as e:
             FlashView.display_error(str(e))
@@ -79,6 +97,13 @@ class EventController:
     def view_events_for_support(self):
         try:
             events_list = self.event_model.view_events_for_support()
+            if events_list:
+                # replace customer id by customer lastname for user in charge of the customer
+                for i in range(len(events_list)):
+                    event_list = list(events_list[i])
+                    contract = self.contract_model.view_single_contract(int(event_list[7])) # info contract with contract id
+                    event_list[7] = contract[1] # Contract title
+                    events_list[i] = tuple(event_list)
             return events_list
         except Exception as e:
             FlashView.display_error(str(e))

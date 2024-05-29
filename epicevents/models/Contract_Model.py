@@ -51,7 +51,7 @@ class ContractModel:
 
     def view_single_contract(self, contract_id):
         try:
-            query = "SELECT customer_id, title, total_amount, remaining_amount, creation_date, commercial_user_id, statement_id, id FROM Contracts WHERE id = ?"
+            query = "SELECT id, title, total_amount, remaining_amount, creation_date, customer_id, commercial_user_id, statement_id FROM Contracts WHERE id = ?"
             self.cursor.execute(query, (contract_id,))
             contract = self.cursor.fetchone()
             return contract if contract else None
@@ -73,5 +73,14 @@ class ContractModel:
             self.cursor.execute(query)
             contracts_list = self.cursor.fetchall()
             return contracts_list if contracts_list else None
+        except sqlite3.Error as e:
+            FlashView.display_error(str(e))
+
+    def get_statement_name(self, id):
+        try:
+            query = "SELECT statement_name FROM Statements WHERE id = ?"
+            self.cursor.execute(query, (id,))
+            statement_name = self.cursor.fetchone()[0]
+            return statement_name if statement_name else None
         except sqlite3.Error as e:
             FlashView.display_error(str(e))

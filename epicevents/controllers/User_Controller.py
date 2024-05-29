@@ -42,8 +42,6 @@ class UserController:
             hash_pwd = self.hash_password_auth(password, salt)
             success, user_id = self.user_model.authenticate_user(username, hash_pwd)
             if success:
-                # Update USER_ID in .env
-                self.update_user_id_in_env(user_id)
                 # Create JWT token
                 token = jwt.encode({"user_id": user_id}, SECRET_KEY, algorithm="HS256")
                 return True, token
@@ -59,6 +57,8 @@ class UserController:
             user_job = self.user_model.get_user_permissions(user_id)
             required_jobs = [1, 2, 3, 4]
             if user_job in required_jobs:
+                # Update USER_ID Connected in .env
+                self.update_user_id_in_env(user_id)
                 return True, user_job
             else:
                 return False, user_job
@@ -85,6 +85,13 @@ class UserController:
     def view_users(self):
         try:
             users_list = self.user_model.view_users()
+            if users_list:
+                # replace job id by job title
+                for i in range(len(users_list)):
+                    user_list = list(users_list[i])
+                    job_name = self.user_model.get_job_name(user_list[1])
+                    user_list[1] = job_name
+                    users_list[i] = tuple(user_list)
             return users_list
         except Exception as e:
             FlashView.display_error(str(e))

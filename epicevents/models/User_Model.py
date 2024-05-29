@@ -88,6 +88,24 @@ class UserModel:
         except sqlite3.Error as e:
             FlashView.display_error(str(e))
 
+    def get_job_name(self, job_id):
+        try:
+            query = "SELECT title FROM Jobs WHERE id = ?"
+            self.cursor.execute(query, (job_id,))
+            job = self.cursor.fetchone()[0]
+            return job if job else None
+        except sqlite3.Error as e:
+            FlashView.display_error(str(e))
+
+    def get_username(self, user_id):
+        try:
+            query = "SELECT username FROM Users WHERE id = ?"
+            self.cursor.execute(query, (user_id,))
+            username = self.cursor.fetchone()[0]
+            return username if username else None
+        except sqlite3.Error as e:
+            FlashView.display_error(str(e))
+
     def delete_user(self, username):
         try:
             query = "DELETE FROM Users WHERE username = ?"

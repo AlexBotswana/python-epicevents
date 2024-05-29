@@ -59,7 +59,7 @@ class UserView:
             if list_users:
                 for user in list_users:
                     print(user)
-                else:
-                    print("No user found.")
+            else:
+                print("No user found.")
         except Exception as e:
             FlashView.display_error(str(e))
